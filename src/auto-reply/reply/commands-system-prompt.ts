@@ -30,7 +30,7 @@ export async function resolveCommandsSystemPromptBundle(
   const workspaceDir = params.workspaceDir;
   const topicId =
     params.command.channel === "telegram"
-      ? params.sessionEntry?.lastThreadId ?? undefined
+      ? params.sessionEntry?.lastThreadId
       : undefined;
   const { bootstrapFiles, contextFiles: injectedFiles } = await resolveBootstrapContextForRun({
     workspaceDir,

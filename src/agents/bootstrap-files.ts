@@ -74,7 +74,7 @@ async function loadTopicBootstrapFiles(params: {
 
   const dirName =
     typeof topicId === "string" ? topicId.trim() : Number.isFinite(topicId) ? String(topicId) : "";
-  if (!dirName) {
+  if (!dirName || dirName.includes("/") || dirName.includes("\\") || dirName.includes("..")) {
     return [];
   }
 

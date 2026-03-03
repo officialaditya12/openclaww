@@ -101,7 +101,7 @@ describe("resolveBootstrapFilesForRun", () => {
       const files = await resolveBootstrapFilesForRun({
         workspaceDir,
         agentId: "main",
-        ...( { topicId: 7 } as { topicId: number } ),
+        topicId: 7,
       });
 
       const agents = files.find((file) => file.name === "AGENTS.md");
