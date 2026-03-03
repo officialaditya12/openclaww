@@ -92,6 +92,7 @@ export async function resolveBootstrapFilesForRun(params: {
   warn?: (message: string) => void;
   contextMode?: BootstrapContextMode;
   runKind?: BootstrapContextRunKind;
+  topicId?: string | number;
 }): Promise<WorkspaceBootstrapFile[]> {
   const sessionKey = params.sessionKey ?? params.sessionId;
   const rawFiles = params.sessionKey
@@ -102,9 +103,7 @@ export async function resolveBootstrapFilesForRun(params: {
     : await loadWorkspaceBootstrapFiles(params.workspaceDir);
   const topicFiles = await loadTopicBootstrapFiles({
     agentId: params.agentId,
-    // Allow future callers to pass topicId without changing the exported
-    // params type in a breaking way.
-    topicId: (params as { topicId?: string | number }).topicId,
+    topicId: params.topicId,
   });
 
   const mergedFiles = (() => {
@@ -133,7 +132,7 @@ export async function resolveBootstrapFilesForRun(params: {
     sessionKey: params.sessionKey,
     sessionId: params.sessionId,
     agentId: params.agentId,
-    topicId: (params as { topicId?: string | number }).topicId,
+    topicId: params.topicId,
   });
   return sanitizeBootstrapFiles(updated, params.warn);
 }
@@ -147,15 +146,12 @@ export async function resolveBootstrapContextForRun(params: {
   warn?: (message: string) => void;
   contextMode?: BootstrapContextMode;
   runKind?: BootstrapContextRunKind;
+  topicId?: string | number;
 }): Promise<{
   bootstrapFiles: WorkspaceBootstrapFile[];
   contextFiles: EmbeddedContextFile[];
 }> {
-  const bootstrapFiles = await resolveBootstrapFilesForRun(
-    params as Parameters<typeof resolveBootstrapFilesForRun>[0] & {
-      topicId?: string | number;
-    },
-  );
+  const bootstrapFiles = await resolveBootstrapFilesForRun(params);
   const contextFiles = buildBootstrapContextFiles(bootstrapFiles, {
     maxChars: resolveBootstrapMaxChars(params.config),
     totalMaxChars: resolveBootstrapTotalMaxChars(params.config),
